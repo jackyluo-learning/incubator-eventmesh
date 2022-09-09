@@ -62,4 +62,6 @@ include 'eventmesh-webhook'
 include 'eventmesh-webhook:eventmesh-webhook-api'
 include 'eventmesh-webhook:eventmesh-webhook-admin'
 include 'eventmesh-webhook:eventmesh-webhook-receive'
+include 'eventmesh-protocol-plugin:eventmesh-protocol-amqp'
+findProject(':eventmesh-protocol-plugin:eventmesh-protocol-amqp')?.name = 'eventmesh-protocol-amqp'
 
