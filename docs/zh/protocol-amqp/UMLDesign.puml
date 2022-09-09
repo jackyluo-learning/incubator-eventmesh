@@ -1,0 +1,85 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Frame
+
+AMQBody <|.. ContentBody
+AMQBody <|.. ContentHeaderBody
+Decoder ..> AMQProcessor: 分发处理
+AMQProcessor <|.. ChannelProcessor
+AMQProcessor <|.. ConnectionProcessor
+
+class Frame {
+{field} - int type
+{field} - int channel
+{field} - byte[] payload
+{method} + Frame readFrom(ByteBuf in)
+{method} + int getType()
+{method} + int getChannel()
+{method} + byte[] getPayload()
+}
+note left of Frame::readFrom
+    用于从netty ByteBuf中读取字节，组装通信帧
+end note
+note left of Frame::type
+    标识Frame的类型，方法帧，内容头帧和内容体帧
+end note
+
+interface AMQBody{
+{method} + void process(ByteBuf, AMQProcessor, long)
+}
+
+class ContentHeaderBody{
+}
+
+class ContentBody{
+}
+
+class AMQPackage{
+{field} - PackageState state
+{}
+}
+
+note bottom of AMQPackage
+    AMQP的报文类
+end note
+
+class AMQConnection{
+
+}
+note top of AMQConnection
+    AMQP连接类，表示一个tcp连接，处理连接相关流程：
+    port与ip定义，循环通讯帧处理
+end note
+
+class Decoder{
+{field} - AMQProcessor processor
+{method} + AMQProcessor getProcessor()
+{method} + void decode(ByteBuf)
+{method} + boolean processCommand(ByteBuf)
+{method} + void processInput(ByteBuf)
+{method} + void processFrame(int, byte, long, ByteBuf)
+{method} + dispatchMethod(int, ByteBuf)
+}
+note left of Decoder
+    循环处理通讯帧
+end note
+
+interface Encoder{
+
+}
+
+interface AMQProcessor{
+
+}
+
+class ConnectionProcessor{
+
+}
+
+class ChannelProcessor{
+
+}
+
+
+@enduml
