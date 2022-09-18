@@ -7,11 +7,13 @@ public class ProtocolKey {
     
     public static final String EXCHANGE = "exchange";
 
-    public static final String DEFAULT_ROUTING_KEY = "default_routingKey";
+    public static final String DEFAULT_ROUTING_KEY = "defaultRoutingKey";
 
-    public static final String DEFAULT_EXCHANGE = "default_exchange";
+    public static final String DEFAULT_EXCHANGE = "defaultExchange";
 
-    public static final String BASIC_PROPERTIES = "basic_properties";
+    public static final String QUEUE_NAME = "queueName";
+
+    public static final String BASIC_PROPERTIES = "basicProperties";
 
     public static class ContentHeaderProperties{
         public static final String CLASS_ID = "classId";

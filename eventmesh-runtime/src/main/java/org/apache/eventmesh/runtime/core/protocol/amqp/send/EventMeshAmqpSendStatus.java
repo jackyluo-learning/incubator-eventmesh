@@ -15,17 +15,10 @@
  * limitations under the License.
  */
 
-dependencies {
-    implementation project(":eventmesh-protocol-plugin:eventmesh-protocol-api")
-    implementation "io.cloudevents:cloudevents-core"
-    implementation ("io.grpc:grpc-protobuf:1.42.2") {
-        exclude group: "com.google.protobuf", module: "protobuf-java"
-    }
-    implementation("com.google.protobuf:protobuf-java:3.21.5")
+package org.apache.eventmesh.runtime.core.protocol.amqp.send;
 
-    implementation 'com.alibaba:fastjson:1.2.83'
-    implementation "com.rabbitmq:amqp-client:5.15.0"
-
-    testImplementation project(":eventmesh-protocol-plugin:eventmesh-protocol-api")
-    testImplementation "io.cloudevents:cloudevents-core"
+public enum EventMeshAmqpSendStatus {
+    SUCCESS,
+    SEND_TOO_FAST,
+    OTHER_EXCEPTION;
 }

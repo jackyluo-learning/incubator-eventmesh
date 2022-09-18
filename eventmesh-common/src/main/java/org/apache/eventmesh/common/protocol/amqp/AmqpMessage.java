@@ -1,8 +1,8 @@
 package org.apache.eventmesh.common.protocol.amqp;
 
+import com.rabbitmq.client.AMQP.BasicProperties;
 import lombok.Data;
 import org.apache.eventmesh.common.protocol.ProtocolTransportObject;
-import org.apache.eventmesh.common.protocol.amqp.impl.AMQBasicProperties;
 
 import java.util.Map;
 
@@ -11,7 +11,7 @@ import java.util.Map;
  */
 @Data
 public class AmqpMessage implements ProtocolTransportObject {
-    private AMQBasicProperties contentHeader;
+    private BasicProperties contentHeader;
 
     private byte[] contentBody;
 
@@ -21,7 +21,7 @@ public class AmqpMessage implements ProtocolTransportObject {
         this(null, null, null);
     }
 
-    public AmqpMessage(AMQBasicProperties contentHeader, byte[] contentBody, Map<String, Object> extendInfo) {
+    public AmqpMessage(BasicProperties contentHeader, byte[] contentBody, Map<String, Object> extendInfo) {
         this.contentHeader = contentHeader;
         this.contentBody = contentBody;
         this.extendInfo = extendInfo;
