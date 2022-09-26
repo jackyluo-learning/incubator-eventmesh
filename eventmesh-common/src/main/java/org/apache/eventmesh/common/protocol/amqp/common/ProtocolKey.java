@@ -15,7 +15,7 @@ public class ProtocolKey {
 
     public static final String BASIC_PROPERTIES = "basicProperties";
 
-    public static class ContentHeaderProperties{
+    public static class ContentHeaderProperties {
         public static final String CLASS_ID = "classId";
 
         public static final String CLASS_NAME = "className";

@@ -3,24 +3,24 @@ package org.apache.eventmesh.common.protocol.amqp;
 import java.util.Map;
 
 /**
- * AMQP报文内容头基类
+ * base class of AMQP content header
  */
-public interface ContentHeader extends Cloneable{
+public interface ContentHeader extends Cloneable {
 
     /**
-     * 获取内容头的类id与方法的类id一致
+     * obtain class id of content header and method
      * @return
      */
     int getClassId();
 
     /**
-     * 获取内容头的类名
+     * obtain class name
      * @return
      */
     String getClassName();
 
     /**
-     * 将属性放进map中
+     * put attr into map
      * @return
      */
     Map<String, Object> toMap();

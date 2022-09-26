@@ -1,13 +1,14 @@
 package org.apache.eventmesh.common.protocol.amqp;
 
-import com.rabbitmq.client.AMQP.BasicProperties;
-import lombok.Data;
-import org.apache.eventmesh.common.protocol.ProtocolTransportObject;
-
 import java.util.Map;
 
+import lombok.Data;
+
+import org.apache.eventmesh.common.protocol.ProtocolTransportObject;
+import com.rabbitmq.client.AMQP.BasicProperties;
+
 /**
- * amqp消息体，包含content header和content body
+ * message body of Amqp, including content header and content body
  */
 @Data
 public class AmqpMessage implements ProtocolTransportObject {
