@@ -14,16 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.eventmesh.runtime.core.protocol.amqp.remoting.codec;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.util.Attribute;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.eventmesh.runtime.core.protocol.amqp.exception.MalformedFrameException;
-import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.frame.AMQPFrame;
-import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.constants.ProtocolKey;
+import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.AMQPFrame;
 import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.protocol.ProtocolFrame;
 import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.protocol.ProtocolVersion;
 import org.apache.eventmesh.runtime.util.RemotingHelper;
@@ -31,9 +26,16 @@ import org.apache.eventmesh.runtime.util.RemotingHelper;
 import java.io.IOException;
 import java.util.List;
 
-@Slf4j
-@ChannelHandler.Sharable
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+
+
 public class AmqpCodeDecoder extends AbstractBatchDecoder {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * the length of protocol code
@@ -43,19 +45,19 @@ public class AmqpCodeDecoder extends AbstractBatchDecoder {
     /**
      * only support 091
      */
-    protected ProtocolVersion DEFAULT_PROTOCOL_VERSION = ProtocolVersion.v0_91;
+    private static final ProtocolVersion DEFAULT_PROTOCOL_VERSION = ProtocolVersion.v0_91;
 
     protected int maxFrameSize;
+
+    public AmqpCodeDecoder(int maxFrameSize) {
+        super();
+        this.maxFrameSize = maxFrameSize;
+    }
 
     /**
      * representing current process is the first connection between client and server, meaning that protocol header needs to be processed.
      */
     private boolean firstRead = true;
-
-    public AmqpCodeDecoder (int frameSize) {
-        super();
-        this.maxFrameSize = frameSize;
-    }
 
     /**
      * decode the protocol code
@@ -91,7 +93,7 @@ public class AmqpCodeDecoder extends AbstractBatchDecoder {
                     // after protocol has been processed, change firstRead to be false to ensure the remaining communication should not check the Protocol Header again
                     firstRead = false;
                 } else {
-                    log.error("protocol {} not support", protocolVersion);
+                    logger.error("protocol {} not support", protocolVersion);
                     ctx.writeAndFlush(new ProtocolFrame(DEFAULT_PROTOCOL_VERSION));
                     ctx.close();
                 }

@@ -15,11 +15,17 @@
  * limitations under the License.
  */
 
-package org.apache.eventmesh.runtime.core.protocol.amqp.exception;
+package org.apache.eventmesh.runtime.core.protocol.amqp.remoting;
 
-public class AmqpProtocolClassException extends Exception {
+import java.io.Serializable;
 
-    public AmqpProtocolClassException(String message) {
-        super(message);
-    }
+import io.netty.buffer.ByteBuf;
+
+/**
+ *
+ */
+public interface AMQData extends Serializable {
+
+    void encode(ByteBuf buf);
+
 }

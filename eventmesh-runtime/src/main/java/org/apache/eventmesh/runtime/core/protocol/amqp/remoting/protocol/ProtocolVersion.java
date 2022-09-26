@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.eventmesh.runtime.core.protocol.amqp.remoting.protocol;
 
 import java.util.Arrays;
@@ -34,14 +35,14 @@ public class ProtocolVersion {
     public static final ProtocolVersion v1_0 = new ProtocolVersion((byte) 1, (byte) 0, (byte) 0);
     private static final Set<ProtocolVersion> protocols = new HashSet<>(2);
 
-   static  {
+    static {
 
        protocols.add(v0_91);
        protocols.add(v0_9);
     }
 
-    public static boolean checkVersionSupport(ProtocolVersion pv){
-       return protocols.contains(pv);
+    public static boolean checkVersionSupport(ProtocolVersion pv) {
+        return protocols.contains(pv);
     }
 
 
@@ -88,20 +89,24 @@ public class ProtocolVersion {
         return protocolRevision;
     }
 
-    @Override public boolean equals(Object o) {
-        if (this == o)
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
-        if (o == null || getClass() != o.getClass())
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
+        }
         ProtocolVersion version = (ProtocolVersion) o;
-        return protocolClass == version.protocolClass &&
-            protocolMajor == version.protocolMajor &&
-            protocolMinor == version.protocolMinor &&
-            protocolRevision == version.protocolRevision &&
-            Arrays.equals(protocolHeader, version.protocolHeader);
+        return protocolClass == version.protocolClass
+            && protocolMajor == version.protocolMajor
+            && protocolMinor == version.protocolMinor
+            && protocolRevision == version.protocolRevision
+            && Arrays.equals(protocolHeader, version.protocolHeader);
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int result = Objects.hash(protocolClass, protocolMajor, protocolMinor, protocolRevision);
         result = 31 * result + Arrays.hashCode(protocolHeader);
         return result;
