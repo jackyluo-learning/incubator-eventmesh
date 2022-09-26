@@ -117,4 +117,9 @@ public class ProtocolVersion {
         builder.append("-" + protocolRevision);
         return builder.toString();
     }
+
+    public byte getActualMinorVersion() {
+        return this.protocolMinor > 90 ? (byte) (this.protocolMinor / 10) : this.protocolMinor;
+    }
+
 }

@@ -1,6 +1,6 @@
 package org.apache.eventmesh.runtime.core.protocol.amqp.processor;
 
-import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.AMQPFrame;
+import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.frame.AMQPFrame;
 
 import java.util.Map;
 

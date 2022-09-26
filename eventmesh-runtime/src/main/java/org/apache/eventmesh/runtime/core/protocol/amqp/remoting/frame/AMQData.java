@@ -1,4 +1,4 @@
-package org.apache.eventmesh.runtime.core.protocol.amqp.remoting;
+package org.apache.eventmesh.runtime.core.protocol.amqp.remoting.frame;
 
 import io.netty.buffer.ByteBuf;
 

@@ -2,7 +2,7 @@ package org.apache.eventmesh.runtime.core.protocol.amqp.consumer;
 
 import java.util.List;
 
-public class ConsumerImpl implements Consumer{
+public class ConsumerImpl implements Consumer {
     @Override
     public void messageRedeliver(Object messageId) {
 

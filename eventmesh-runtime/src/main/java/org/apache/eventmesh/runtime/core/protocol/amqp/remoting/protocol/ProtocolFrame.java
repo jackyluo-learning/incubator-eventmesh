@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import org.apache.eventmesh.runtime.core.protocol.amqp.exception.AmqpProtocolClassException;
 import org.apache.eventmesh.runtime.core.protocol.amqp.exception.AmqpProtocolHeaderException;
 import org.apache.eventmesh.runtime.core.protocol.amqp.exception.AmqpProtocolVersionException;
-import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.AMQData;
+import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.frame.AMQData;
 
 import java.nio.charset.StandardCharsets;
 
@@ -38,9 +38,11 @@ public class ProtocolFrame implements AMQData {
     }
 
     public ProtocolFrame(ProtocolVersion protocolVersion) {
-        this.protocolMajor = protocolVersion.getProtocolMajor();
-        this.protocolMinor = protocolVersion.getProtocolMinor();
-        this.protocolRevision = protocolVersion.getProtocolRevision();
+        this(AMQP_HEADER,
+                protocolVersion.equals(ProtocolVersion.v0_91) ? 0 : CURRENT_PROTOCOL_CLASS,
+                protocolVersion.equals(ProtocolVersion.v0_91) ? 0 : protocolVersion.getProtocolMajor(),
+                protocolVersion.equals(ProtocolVersion.v0_91) ? 9 : protocolVersion.getProtocolMajor(),
+                protocolVersion.equals(ProtocolVersion.v0_91) ? 1 : protocolVersion.getProtocolRevision());
     }
 
     public static ProtocolFrame decode(ByteBuf in) {

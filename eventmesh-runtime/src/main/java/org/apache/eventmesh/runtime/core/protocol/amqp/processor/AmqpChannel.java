@@ -2,14 +2,17 @@ package org.apache.eventmesh.runtime.core.protocol.amqp.processor;
 
 import com.rabbitmq.client.impl.AMQCommand;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.eventmesh.runtime.core.protocol.amqp.ExchangeContainer;
+import org.apache.eventmesh.runtime.core.protocol.amqp.ExchangeService;
+import org.apache.eventmesh.runtime.core.protocol.amqp.QueueContainer;
+import org.apache.eventmesh.runtime.core.protocol.amqp.QueueService;
 import org.apache.eventmesh.runtime.core.protocol.amqp.consumer.Consumer;
 import org.apache.eventmesh.runtime.core.protocol.amqp.consumer.ConsumerImpl;
-import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.AMQPFrame;
-import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.protocol.ErrorCodes;
+import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.frame.AMQPFrame;
+import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.constants.ErrorCodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
@@ -17,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class AmqpChannel implements ChannelMethodProcessor{
+public class AmqpChannel implements ChannelMethodProcessor {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass().getName());
 
@@ -47,7 +50,19 @@ public class AmqpChannel implements ChannelMethodProcessor{
      */
     private AtomicLong deliveryTag = new AtomicLong(0);
 
+    private ExchangeService exchangeService;
+    private QueueService queueService;
+    private ExchangeContainer exchangeContainer;
+    private QueueContainer queueContainer;
 
+    public AmqpChannel(int channelId, AmqpConnection amqpConnection) {
+        this.channelId = channelId;
+        this.connection = amqpConnection;
+        this.exchangeService = this.connection.getAmqpBrokerService().getExchangeService();
+        this.queueService = this.connection.getAmqpBrokerService().getQueueService();
+        this.exchangeContainer = this.connection.getAmqpBrokerService().getExchangeContainer();
+        this.queueContainer = this.connection.getAmqpBrokerService().getQueueContainer();
+    }
 
     @Override
     public void receiveChannelFlow(boolean active) {
@@ -80,6 +95,7 @@ public class AmqpChannel implements ChannelMethodProcessor{
         }
 
         if (hasCurrentMessage()) {
+            // TODO: 2022/9/20 send message to mq
 //            try {
 //                if (currentMessage.handleFrame(data)) {
 //                    processSendMessage();
@@ -106,6 +122,7 @@ public class AmqpChannel implements ChannelMethodProcessor{
         }
 
         if (hasCurrentMessage()) {
+            // TODO: 2022/9/20 send message to mq
 //            try {
 //                if (currentMessage.handleFrame(frame)) {
 //                    processSendMessage();
@@ -137,8 +154,7 @@ public class AmqpChannel implements ChannelMethodProcessor{
      * send message
      */
     private void processSendMessage(){
-
-
+        // TODO: 2022/9/20 convert to cloudEvent and send to mq
 
 
 

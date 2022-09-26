@@ -18,7 +18,7 @@
  * under the License.
  *
  */
-package org.apache.eventmesh.runtime.core.protocol.amqp.remoting.protocol;
+package org.apache.eventmesh.runtime.core.protocol.amqp.remoting.constants;
 
 /**
  * Defines constants for AMQP codes

@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.eventmesh.runtime.boot.EventMeshAmqpServer;
 import org.apache.eventmesh.runtime.core.protocol.amqp.exception.AmqpFrameDecodingException;
-import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.AMQPFrame;
+import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.frame.AMQPFrame;
 import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.protocol.ProtocolFrame;
 
 import java.io.IOException;
@@ -23,12 +23,12 @@ public abstract class AmqpHandler extends ChannelInboundHandlerAdapter implement
 
     protected ChannelHandlerContext ctx;
     protected SocketAddress remoteAddress;
-    protected final EventMeshAmqpServer amqpServer;
+    protected final EventMeshAmqpServer eventMeshAmqpServer;
     @Getter
     protected AtomicBoolean isActive = new AtomicBoolean(false);
 
-    protected AmqpHandler(EventMeshAmqpServer amqpServer) {
-        this.amqpServer = amqpServer;
+    protected AmqpHandler(EventMeshAmqpServer eventMeshAmqpServer) {
+        this.eventMeshAmqpServer = eventMeshAmqpServer;
     }
 
     @Override
