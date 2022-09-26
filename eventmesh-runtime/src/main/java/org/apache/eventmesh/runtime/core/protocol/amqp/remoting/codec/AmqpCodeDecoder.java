@@ -17,8 +17,10 @@
 
 package org.apache.eventmesh.runtime.core.protocol.amqp.remoting.codec;
 
+import io.netty.util.Attribute;
 import org.apache.eventmesh.runtime.core.protocol.amqp.exception.MalformedFrameException;
 import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.AMQPFrame;
+import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.constants.ProtocolKey;
 import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.protocol.ProtocolFrame;
 import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.protocol.ProtocolVersion;
 import org.apache.eventmesh.runtime.util.RemotingHelper;
