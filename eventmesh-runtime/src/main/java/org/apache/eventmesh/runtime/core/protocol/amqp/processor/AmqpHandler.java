@@ -1,16 +1,7 @@
 package org.apache.eventmesh.runtime.core.protocol.amqp.processor;
 
-import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.UnknownClassOrMethodId;
-import com.rabbitmq.client.impl.AMQImpl;
-import com.rabbitmq.client.impl.Method;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.eventmesh.runtime.boot.EventMeshAmqpServer;
 import org.apache.eventmesh.runtime.core.protocol.amqp.exception.AmqpFrameDecodingException;
-import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.frame.AMQPFrame;
+import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.AMQPFrame;
 import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.protocol.ProtocolFrame;
 
 import java.io.IOException;
@@ -18,17 +9,29 @@ import java.net.SocketAddress;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+
+import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.UnknownClassOrMethodId;
+import com.rabbitmq.client.impl.AMQImpl;
+import com.rabbitmq.client.impl.Method;
+
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 public abstract class AmqpHandler extends ChannelInboundHandlerAdapter implements ConnectionMethodProcessor {
 
     protected ChannelHandlerContext ctx;
     protected SocketAddress remoteAddress;
-    protected final EventMeshAmqpServer eventMeshAmqpServer;
+    // TODO
+    protected final Object amqpServer;
     @Getter
     protected AtomicBoolean isActive = new AtomicBoolean(false);
 
-    protected AmqpHandler(EventMeshAmqpServer eventMeshAmqpServer) {
-        this.eventMeshAmqpServer = eventMeshAmqpServer;
+    protected AmqpHandler(Object amqpServer) {
+        this.amqpServer = amqpServer;
     }
 
     @Override
@@ -90,7 +93,6 @@ public abstract class AmqpHandler extends ChannelInboundHandlerAdapter implement
         } finally {
             // safe release??
             frame.getPayload().release();
-            frame.recycle();
         }
     }
 

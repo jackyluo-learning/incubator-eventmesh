@@ -1,11 +1,25 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.apache.eventmesh.protocol.amqp;
 
 import io.cloudevents.CloudEvent;
 import org.apache.eventmesh.common.protocol.ProtocolTransportObject;
 import org.apache.eventmesh.common.protocol.amqp.AmqpMessage;
-import org.apache.eventmesh.common.protocol.amqp.common.ProtocolKey;
-import org.apache.eventmesh.common.protocol.grpc.protos.SimpleMessage;
-import org.apache.eventmesh.common.protocol.http.HttpEventWrapper;
 import org.apache.eventmesh.protocol.amqp.resolver.AmqpProtocolResolver;
 import org.apache.eventmesh.protocol.api.ProtocolAdaptor;
 import org.apache.eventmesh.protocol.api.exception.ProtocolHandleException;
@@ -13,7 +27,7 @@ import org.apache.eventmesh.protocol.api.exception.ProtocolHandleException;
 import java.util.List;
 
 /**
- * Amqp协议适配器，amqp与cloudEvent之间的转换
+ * Conversion between amqp message to cloudEvent
  */
 public class AmqpProtocolAdaptor implements ProtocolAdaptor<ProtocolTransportObject> {
     @Override
@@ -40,10 +54,9 @@ public class AmqpProtocolAdaptor implements ProtocolAdaptor<ProtocolTransportObj
     @Override
     public ProtocolTransportObject fromCloudEvent(CloudEvent cloudEvent) throws ProtocolHandleException {
         String type = cloudEvent.getType();
-        if (AMQPProtocolConstant.PROTOCOL_NAME.equalsIgnoreCase(type)){
+        if (AMQPProtocolConstant.PROTOCOL_NAME.equalsIgnoreCase(type)) {
             return AmqpProtocolResolver.buildAmqpMessage(cloudEvent);
-        }
-        else {
+        } else {
             throw new ProtocolHandleException(String.format("Unsupported protocolDesc: %s", type));
         }
     }

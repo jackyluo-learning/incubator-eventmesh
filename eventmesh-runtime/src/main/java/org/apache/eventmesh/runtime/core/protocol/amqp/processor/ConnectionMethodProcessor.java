@@ -9,9 +9,9 @@ import java.util.Map;
 public interface ConnectionMethodProcessor {
 
     void receiveConnectionStartOk(Map<String, Object> clientProperties,
-        String mechanism,
-        LongString response,
-        String locale);
+                                  String mechanism,
+                                  LongString response,
+                                  String locale);
 
     void receiveConnectionSecureOk(LongString response);
 
