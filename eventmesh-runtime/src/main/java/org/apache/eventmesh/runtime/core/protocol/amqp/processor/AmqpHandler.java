@@ -1,7 +1,8 @@
 package org.apache.eventmesh.runtime.core.protocol.amqp.processor;
 
+import org.apache.eventmesh.runtime.boot.EventMeshAmqpServer;
 import org.apache.eventmesh.runtime.core.protocol.amqp.exception.AmqpFrameDecodingException;
-import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.AMQPFrame;
+import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.frame.AMQPFrame;
 import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.protocol.ProtocolFrame;
 
 import java.io.IOException;
@@ -26,11 +27,11 @@ public abstract class AmqpHandler extends ChannelInboundHandlerAdapter implement
     protected ChannelHandlerContext ctx;
     protected SocketAddress remoteAddress;
     // TODO
-    protected final Object amqpServer;
+    protected final EventMeshAmqpServer amqpServer;
     @Getter
     protected AtomicBoolean isActive = new AtomicBoolean(false);
 
-    protected AmqpHandler(Object amqpServer) {
+    protected AmqpHandler(EventMeshAmqpServer amqpServer) {
         this.amqpServer = amqpServer;
     }
 

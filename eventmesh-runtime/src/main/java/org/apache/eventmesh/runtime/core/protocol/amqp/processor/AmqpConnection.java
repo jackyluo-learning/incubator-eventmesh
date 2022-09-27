@@ -3,6 +3,7 @@ package org.apache.eventmesh.runtime.core.protocol.amqp.processor;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.LongString;
 import com.rabbitmq.client.impl.AMQImpl;
+import com.rabbitmq.client.impl.Frame;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleState;
@@ -13,10 +14,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.eventmesh.runtime.boot.EventMeshAmqpServer;
 import org.apache.eventmesh.runtime.core.protocol.amqp.MetaMessageService;
 import org.apache.eventmesh.runtime.core.protocol.amqp.VirtualHost;
-import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.*;
 import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.constants.ProtocolKey;
-import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.frame.AMQPFrame;
 import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.constants.ErrorCodes;
+import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.frame.AMQPFrame;
 import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.protocol.ProtocolFrame;
 import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.protocol.ProtocolVersion;
 import org.apache.eventmesh.runtime.util.AmqpUtils;
@@ -43,8 +43,6 @@ public class AmqpConnection  extends AmqpHandler {
     private volatile ConnectionState state;
 
     private ProtocolVersion protocolVersion;
-
-    private MethodRegistry methodRegistry;
 
     private int heartBeatDelay;
 
@@ -134,11 +132,11 @@ public class AmqpConnection  extends AmqpHandler {
                     "Attempt to set max frame size to " + frameMax
                             + " greater than the broker will allow: "
                             + serverFrameMax, 0);
-        } else if (frameMax > 0 && frameMax < eventMeshAmqpServer.getEventMeshAmqpConfiguration().minFrameSize) {
+        } else if (frameMax > 0 && frameMax < amqpServer.getEventMeshAmqpConfiguration().minFrameSize) {
             AmqpUtils.sendConnectionClose(ErrorCodes.SYNTAX_ERROR,
                     "Attempt to set max frame size to " + frameMax
                             + " which is smaller than the specification defined minimum: "
-                            + eventMeshAmqpServer.getEventMeshAmqpConfiguration().minFrameSize, 0);
+                            + amqpServer.getEventMeshAmqpConfiguration().minFrameSize, 0);
         } else {
             int calculatedFrameMax = frameMax == 0 ? serverFrameMax : (int) frameMax;
             setMaxFrameSize(calculatedFrameMax);
@@ -276,10 +274,6 @@ public class AmqpConnection  extends AmqpHandler {
 
     }
 
-    private MethodRegistry getMethodRegistry() {
-        return this.methodRegistry;
-    }
-
     @Override
     public void setCurrentMethod(int classId, int methodId) {
 
@@ -292,11 +286,10 @@ public class AmqpConnection  extends AmqpHandler {
 
     private void setProtocolVersion(ProtocolVersion pv) {
         this.protocolVersion = pv;
-        this.methodRegistry = new MethodRegistry(this.protocolVersion);
     }
 
     private int getDefaultServerMaxFrameSize() {
-        return this.eventMeshAmqpServer.getEventMeshAmqpConfiguration().defaultNetworkBufferSize - AMQPFrame.NON_BODY_SIZE;
+        return this.amqpServer.getEventMeshAmqpConfiguration().defaultNetworkBufferSize - AMQPFrame.NON_BODY_SIZE;
     }
 
     private void setMaxFrameSize(int frameSize) {
@@ -341,7 +334,7 @@ public class AmqpConnection  extends AmqpHandler {
                     AmqpConnection.this.close();
                 } else if (event.state().equals(IdleState.WRITER_IDLE)) {
                     logger.warn("heartbeat write  idle [{}]", AmqpConnection.this.remoteAddress.toString());
-                    AmqpUtils.writeFrame(AMQPFrame.get(AMQP.FRAME_HEARTBEAT, 0));
+                    AmqpUtils.writeFrame(AMQPFrame.get(new Frame(AMQP.FRAME_HEARTBEAT, 0)));
                 }
             }
             super.userEventTriggered(ctx, evt);

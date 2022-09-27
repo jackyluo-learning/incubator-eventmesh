@@ -1,28 +1,57 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.apache.eventmesh.runtime.core.protocol.amqp.remoting.frame;
 
 
-import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.MalformedFrameException;
-import com.rabbitmq.client.impl.Frame;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.Unpooled;
-import io.netty.util.Recycler;
+import org.apache.eventmesh.runtime.core.protocol.amqp.exception.MalformedFrameException;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.Unpooled;
+
+import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.impl.Frame;
 
 public class AMQPFrame implements AMQData {
 
     public static final int NON_BODY_SIZE = 1 /* type */ + 2 /* channel */ + 4 /* payload size */ + 1 /* end character */;
 
-    /** Frame type code */
-    private int type;
+    /**
+     * Frame type code
+     */
+    private final int type;
 
-    /** Frame channel number, 0-65535 */
-    private int channel;
+    /**
+     * Frame channel number, 0-65535
+     */
+    private final int channel;
 
-    private ByteBuf payload;
+    private final ByteBuf payload;
+
+
+    public AMQPFrame(int type, int channel, ByteBuf payload) {
+        this.type = type;
+        this.channel = channel;
+        this.payload = payload;
+    }
 
     public static AMQPFrame get(ByteBuf buf) throws IOException {
         int type = buf.readUnsignedByte();
@@ -33,36 +62,14 @@ public class AMQPFrame implements AMQData {
         if (frameEndMarker != AMQP.FRAME_END) {
             throw new MalformedFrameException("Bad frame end marker: " + frameEndMarker);
         }
-        AMQPFrame frame = RECYCLER.get();
-        frame.type = type;
-        frame.channel = channel;
-        // increase ref cnt
-        frame.payload = payload.retain();
-        return frame;
+
+        return new AMQPFrame(type, channel, payload.retain());
     }
 
     public static AMQPFrame get(Frame frame) {
-        AMQPFrame amqpFrame = RECYCLER.get();
-        amqpFrame.type = frame.type;
-        amqpFrame.channel = frame.channel;
-        amqpFrame.payload = Unpooled.wrappedBuffer(frame.getPayload());
-        return amqpFrame;
+        return new AMQPFrame(frame.type, frame.channel, Unpooled.wrappedBuffer(frame.getPayload()));
     }
 
-    public static AMQPFrame get(int type, int channel) {
-        AMQPFrame frame = RECYCLER.get();
-        frame.type = type;
-        frame.channel = channel;
-        return frame;
-    }
-
-    public static AMQPFrame get(int type, int channel, ByteBuf payload) {
-        AMQPFrame frame = RECYCLER.get();
-        frame.type = type;
-        frame.channel = channel;
-        frame.payload = payload;
-        return frame;
-    }
 
     @Override
     public void encode(ByteBuf out) {
@@ -117,38 +124,14 @@ public class AMQPFrame implements AMQData {
         return new DataInputStream(new ByteBufInputStream(this.payload));
     }
 
-    private final Recycler.Handle<AMQPFrame> recyclerHandle;
-
-    private AMQPFrame(Recycler.Handle<AMQPFrame> recyclerHandle) {
-        this.recyclerHandle = recyclerHandle;
-    }
-
-    private static final Recycler<AMQPFrame> RECYCLER = new Recycler<AMQPFrame>() {
-
-        @Override
-        protected AMQPFrame newObject(Handle<AMQPFrame> handle) {
-            return new AMQPFrame(handle);
-        }
-    };
-
-    @Override
-    public void recycle() {
-        this.type = -1;
-        this.channel = -1;
-        this.payload = null;
-        if (recyclerHandle != null) {
-            recyclerHandle.recycle(this);
-        }
-
-    }
 
     @Override
     public String toString() {
-        return "AMQPFrame{" +
-            "type=" + type +
-            ", channel=" + channel +
-            ", payload=" + payload +
-            '}';
+        return "AMQPFrame{"
+            + "type=" + type
+            + ", channel=" + channel
+            + ", payload=" + payload
+            + '}';
     }
 
 }

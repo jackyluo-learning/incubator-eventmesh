@@ -8,8 +8,8 @@ import org.apache.eventmesh.runtime.core.protocol.amqp.QueueContainer;
 import org.apache.eventmesh.runtime.core.protocol.amqp.QueueService;
 import org.apache.eventmesh.runtime.core.protocol.amqp.consumer.Consumer;
 import org.apache.eventmesh.runtime.core.protocol.amqp.consumer.ConsumerImpl;
-import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.frame.AMQPFrame;
 import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.constants.ErrorCodes;
+import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.frame.AMQPFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
