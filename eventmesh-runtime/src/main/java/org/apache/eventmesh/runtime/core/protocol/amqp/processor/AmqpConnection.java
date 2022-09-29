@@ -10,6 +10,7 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.Attribute;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.eventmesh.runtime.boot.EventMeshAmqpServer;
 import org.apache.eventmesh.runtime.core.protocol.amqp.MetaMessageService;
@@ -50,6 +51,7 @@ public class AmqpConnection  extends AmqpHandler {
 
     private int maxChannelNo;
 
+    @Getter
     private VirtualHost vhost;
 
     private MetaMessageService metaMessageService;
@@ -319,7 +321,7 @@ public class AmqpConnection  extends AmqpHandler {
                 && closingChannelsList.containsKey(channelId));
     }
 
-    public MetaMessageService getAmqpBrokerService() {
+    public MetaMessageService getMetaMessageService() {
         return metaMessageService;
     }
 

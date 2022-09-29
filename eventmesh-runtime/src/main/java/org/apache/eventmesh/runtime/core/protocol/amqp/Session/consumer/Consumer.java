@@ -1,8 +1,12 @@
-package org.apache.eventmesh.runtime.core.protocol.amqp.consumer;
+package org.apache.eventmesh.runtime.core.protocol.amqp.Session.consumer;
+
+import io.cloudevents.CloudEvent;
 
 import java.util.List;
 
 public interface Consumer {
+
+    void pushMessage(CloudEvent cloudEvent);
 
     void messageRedeliver(Object messageId);
 

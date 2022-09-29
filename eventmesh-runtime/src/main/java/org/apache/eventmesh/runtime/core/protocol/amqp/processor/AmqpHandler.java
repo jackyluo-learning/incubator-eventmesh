@@ -26,7 +26,8 @@ public abstract class AmqpHandler extends ChannelInboundHandlerAdapter implement
 
     protected ChannelHandlerContext ctx;
     protected SocketAddress remoteAddress;
-    // TODO
+
+    @Getter
     protected final EventMeshAmqpServer amqpServer;
     @Getter
     protected AtomicBoolean isActive = new AtomicBoolean(false);

@@ -1,30 +1,42 @@
 package org.apache.eventmesh.runtime.core.protocol.amqp.processor;
 
 import com.rabbitmq.client.impl.AMQCommand;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.eventmesh.runtime.core.protocol.amqp.ExchangeContainer;
 import org.apache.eventmesh.runtime.core.protocol.amqp.ExchangeService;
 import org.apache.eventmesh.runtime.core.protocol.amqp.QueueContainer;
 import org.apache.eventmesh.runtime.core.protocol.amqp.QueueService;
-import org.apache.eventmesh.runtime.core.protocol.amqp.consumer.Consumer;
-import org.apache.eventmesh.runtime.core.protocol.amqp.consumer.ConsumerImpl;
+import org.apache.eventmesh.runtime.core.protocol.amqp.Session.Session;
+import org.apache.eventmesh.runtime.core.protocol.amqp.Session.consumer.Consumer;
+import org.apache.eventmesh.runtime.core.protocol.amqp.Session.consumer.ConsumerImpl;
+import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.MetaModels.AmqpQueue;
 import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.constants.ErrorCodes;
 import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.frame.AMQPFrame;
+import org.apache.eventmesh.runtime.util.AmqpUtils;
+import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * client can build multiple channels, each represent a session
+ */
 public class AmqpChannel implements ChannelMethodProcessor {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass().getName());
 
     private  int channelId;
+
+    @Getter
     private  AmqpConnection connection;
     private  long amqpMaxMessageSize;
     /**
@@ -55,13 +67,19 @@ public class AmqpChannel implements ChannelMethodProcessor {
     private ExchangeContainer exchangeContainer;
     private QueueContainer queueContainer;
 
+    /**
+     * store context of a AmqpChannel
+     */
+    private Session session;
+
     public AmqpChannel(int channelId, AmqpConnection amqpConnection) {
         this.channelId = channelId;
         this.connection = amqpConnection;
-        this.exchangeService = this.connection.getAmqpBrokerService().getExchangeService();
-        this.queueService = this.connection.getAmqpBrokerService().getQueueService();
-        this.exchangeContainer = this.connection.getAmqpBrokerService().getExchangeContainer();
-        this.queueContainer = this.connection.getAmqpBrokerService().getQueueContainer();
+        this.exchangeService = this.connection.getMetaMessageService().getExchangeService();
+        this.queueService = this.connection.getMetaMessageService().getQueueService();
+        this.exchangeContainer = this.connection.getMetaMessageService().getExchangeContainer();
+        this.queueContainer = this.connection.getMetaMessageService().getQueueContainer();
+        this.session = new Session(this);
     }
 
     @Override
@@ -239,18 +257,42 @@ public class AmqpChannel implements ChannelMethodProcessor {
                 + " arguments:{}]",  queue, consumerTag, noLocal, noAck, exclusive, nowait, arguments);
 
         // TODO check queue exist
-
-        final String consumerTag1;
-        if (StringUtils.isBlank(consumerTag)) {
-            consumerTag1 = "consumerTag_" + getNextConsumerTag();
+        AmqpQueue amqpQueue = queueService.getQueue(this.connection.getVhost(), queue);
+        if (amqpQueue == null) {
+            AmqpUtils.sendConnectionClose(ErrorCodes.NOT_FOUND, "No such queue: " + queue, this.channelId);
         } else {
-            consumerTag1 = consumerTag;
+            try {
+                subscribe(consumerTag, amqpQueue, nowait);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private void subscribe(String consumerTag, AmqpQueue amqpQueue, boolean nowait) throws Exception {
+        final String customConsumerTag;
+        if (StringUtils.isBlank(consumerTag)) {
+            customConsumerTag = "consumerTag_" + getNextConsumerTag();
+        } else {
+            customConsumerTag = consumerTag;
         }
 
-        tag2ConsumersMap.computeIfAbsent(consumerTag1, (c) ->new ConsumerImpl());
+        Consumer c = new ConsumerImpl();
+        tag2ConsumersMap.putIfAbsent(customConsumerTag, c);
+        this.session.setConsumer(c);
+        List<String> topicList = queueName2Topic(amqpQueue);
+        for (String topic : topicList) {
+            this.session.getMqConsumerWrapper().subscribe(topic);
+        }
         if (!nowait) {
             //connection.writeMethod(connection.getCommandFactory().createBasicConsumeOkBody(consumer.getConsumerTag()), channelId);
         }
+    }
+
+    private List<String> queueName2Topic (AmqpQueue amqpQueue) {
+        List<String> topicList = new ArrayList<>();
+        // TODO: 2022/9/29 transform queue to topic
+        return topicList;
     }
 
     @Override

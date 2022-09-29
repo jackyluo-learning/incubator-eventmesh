@@ -18,5 +18,8 @@ public class QueueContainer {
         this.queueMap = new ConcurrentHashMap<>();
     }
 
-
+    // TODO: 2022/9/29
+    public AmqpQueue getOrCreateQueue(VirtualHost virtualHost, String queueName) {
+        return null;
+    }
 }

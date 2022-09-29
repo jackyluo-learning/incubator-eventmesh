@@ -26,6 +26,9 @@ public class AmqpQueue {
     @Getter
     private final long connectionId;
 
+    /**
+     * ExchangeName and AmqpBinding Mapping
+     */
     private final Map<String, AmqpBinding> bindings;
 
     public AmqpQueue(String queueName,
