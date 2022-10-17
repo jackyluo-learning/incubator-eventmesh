@@ -17,10 +17,9 @@
 
 package org.apache.eventmesh.runtime.core.protocol.amqp.remoting.codec;
 
-import io.netty.util.Attribute;
+import io.netty.util.AttributeKey;
 import org.apache.eventmesh.runtime.core.protocol.amqp.exception.MalformedFrameException;
-import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.frame.AMQPFrame;
-import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.constants.ProtocolKey;
+import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.AMQPFrame;
 import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.protocol.ProtocolFrame;
 import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.protocol.ProtocolVersion;
 import org.apache.eventmesh.runtime.util.RemotingHelper;
@@ -39,6 +38,10 @@ public class AmqpCodeDecoder extends AbstractBatchDecoder {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    public static final AttributeKey<Integer> ATTRIBUTE_KEY_MAX_FRAME_SIZE = AttributeKey.valueOf("maxFrameSize");
+
+
+
     /**
      * the length of protocol code
      */
@@ -49,16 +52,7 @@ public class AmqpCodeDecoder extends AbstractBatchDecoder {
      */
     private static final ProtocolVersion DEFAULT_PROTOCOL_VERSION = ProtocolVersion.v0_91;
 
-    protected int maxFrameSize;
 
-    public AmqpCodeDecoder(int maxFrameSize) {
-        super();
-        this.maxFrameSize = maxFrameSize;
-    }
-
-    /**
-     * representing current process is the first connection between client and server, meaning that protocol header needs to be processed.
-     */
     private boolean firstRead = true;
 
     /**
@@ -92,7 +86,6 @@ public class AmqpCodeDecoder extends AbstractBatchDecoder {
                 if (checkProtocolVersion(protocolVersion)) {
                     in.resetReaderIndex();
                     decode0(ctx, in, out, true);
-                    // after protocol has been processed, change firstRead to be false to ensure the remaining communication should not check the Protocol Header again
                     firstRead = false;
                 } else {
                     logger.error("protocol {} not support", protocolVersion);
@@ -111,41 +104,38 @@ public class AmqpCodeDecoder extends AbstractBatchDecoder {
     private void decode0(ChannelHandlerContext ctx, ByteBuf in, List<Object> out, boolean isProtocolHeader) throws IOException {
 
         if (isProtocolHeader) {
-            // build protocol header
             if (in.readableBytes() >= ProtocolFrame.PROTOCOL_FRAME_LENGTH) {
                 out.add(ProtocolFrame.decode(in));
 
             }
         } else {
-            // build frame
-            Attribute<Integer> configMaxFrameSizeAttr = ctx.channel().attr(ProtocolKey.MAX_FRAME_SIZE);
-            Integer configMaxFrameSize = configMaxFrameSizeAttr.get();
-            if (configMaxFrameSize != null) {
-                maxFrameSize = configMaxFrameSize;
-            }
             if (in.readableBytes() >= AMQPFrame.NON_BODY_SIZE) {
                 in.markReaderIndex();
                 in.readUnsignedByte();
                 in.readUnsignedShort();
                 int payloadSize = in.readInt();
                 in.resetReaderIndex();
-                if (payloadSize > maxFrameSize) {
-                    throw new MalformedFrameException("frame > maxFrameSize exception remoteAddress:" + RemotingHelper.parseChannelRemoteAddr(ctx.channel()));
+                if (ctx.channel().attr(ATTRIBUTE_KEY_MAX_FRAME_SIZE).get() != null) {
+                    int maxFrameSize = ctx.channel().attr(ATTRIBUTE_KEY_MAX_FRAME_SIZE).get();
+                    if (payloadSize > maxFrameSize) {
+                        throw new MalformedFrameException(
+                                "frame > maxFrameSize exception remoteAddress:" + RemotingHelper.parseChannelRemoteAddr(ctx.channel()));
+                    }
                 }
 
                 if (in.readableBytes() >= (AMQPFrame.NON_BODY_SIZE + payloadSize)) {
+
                     out.add(AMQPFrame.get(in));
                 }
             }
+
         }
+
+
     }
 
 
     private boolean checkProtocolVersion(ProtocolVersion pv) {
         return pv != null && pv.equals(DEFAULT_PROTOCOL_VERSION);
-    }
-
-    public void setMaxFrameSize(int maxFrameSize) {
-        this.maxFrameSize = maxFrameSize;
     }
 }

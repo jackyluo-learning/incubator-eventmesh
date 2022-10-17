@@ -15,28 +15,16 @@
  * limitations under the License.
  */
 
-package org.apache.eventmesh.runtime.core.protocol.amqp;
+package org.apache.eventmesh.runtime.core.protocol.amqp.exchange;
 
-import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.metamodels.AmqpQueue;
+import org.apache.eventmesh.runtime.core.protocol.amqp.metadata.model.BindingInfo;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Set;
 
-/**
- * manage all queues used in the server
- */
-public class QueueContainer {
-    private ExchangeContainer exchangeContainer;
+public interface RouteComponent {
 
-    private Map<VirtualHost, Map<String, AmqpQueue>> queueMap;
+    RoutingResult routMessage(Set<BindingInfo> bindingInfos, AmqpRouter.Type type,
+                              Map<String, Object> routingInfo);
 
-    public QueueContainer(ExchangeContainer exchangeContainer) {
-        this.exchangeContainer = exchangeContainer;
-        this.queueMap = new ConcurrentHashMap<>();
-    }
-
-    // TODO: 2022/9/29
-    public AmqpQueue getOrCreateQueue(VirtualHost virtualHost, String queueName) {
-        return null;
-    }
 }

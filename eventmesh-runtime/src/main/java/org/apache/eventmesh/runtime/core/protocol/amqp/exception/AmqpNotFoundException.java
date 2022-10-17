@@ -14,29 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.eventmesh.runtime.core.protocol.amqp.exception;
 
-package org.apache.eventmesh.runtime.core.protocol.amqp;
+public class AmqpNotFoundException extends Exception {
 
-import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.metamodels.AmqpQueue;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-/**
- * manage all queues used in the server
- */
-public class QueueContainer {
-    private ExchangeContainer exchangeContainer;
-
-    private Map<VirtualHost, Map<String, AmqpQueue>> queueMap;
-
-    public QueueContainer(ExchangeContainer exchangeContainer) {
-        this.exchangeContainer = exchangeContainer;
-        this.queueMap = new ConcurrentHashMap<>();
+    public AmqpNotFoundException() {
     }
 
-    // TODO: 2022/9/29
-    public AmqpQueue getOrCreateQueue(VirtualHost virtualHost, String queueName) {
-        return null;
+    public AmqpNotFoundException(String message) {
+        super(message);
+    }
+
+    public AmqpNotFoundException(Throwable cause) {
+        super(cause);
     }
 }

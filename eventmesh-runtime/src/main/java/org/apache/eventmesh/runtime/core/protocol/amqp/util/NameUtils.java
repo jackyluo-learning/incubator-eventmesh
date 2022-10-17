@@ -15,28 +15,23 @@
  * limitations under the License.
  */
 
-package org.apache.eventmesh.runtime.core.protocol.amqp;
+package org.apache.eventmesh.runtime.core.protocol.amqp.util;
 
-import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.metamodels.AmqpQueue;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
- * manage all queues used in the server
+ * Name Util.
  */
-public class QueueContainer {
-    private ExchangeContainer exchangeContainer;
+public class NameUtils {
+    public static final Pattern NAMED_PATTERN = Pattern.compile("^[-._@\\w]{3,256}$");
 
-    private Map<VirtualHost, Map<String, AmqpQueue>> queueMap;
-
-    public QueueContainer(ExchangeContainer exchangeContainer) {
-        this.exchangeContainer = exchangeContainer;
-        this.queueMap = new ConcurrentHashMap<>();
-    }
-
-    // TODO: 2022/9/29
-    public AmqpQueue getOrCreateQueue(VirtualHost virtualHost, String queueName) {
-        return null;
+    //可包含字母、数字、短划线（-）、下划线（_）、点（.）和 @符号
+    //长度限制3-256个字符之间
+    public static void checkName(String name) {
+        Matcher m = NAMED_PATTERN.matcher(name);
+        if (!m.matches()) {
+            throw new IllegalArgumentException("Invalid named : " + name);
+        }
     }
 }
