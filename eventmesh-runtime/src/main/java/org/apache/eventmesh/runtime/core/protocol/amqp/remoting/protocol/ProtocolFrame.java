@@ -21,7 +21,7 @@ package org.apache.eventmesh.runtime.core.protocol.amqp.remoting.protocol;
 import org.apache.eventmesh.runtime.core.protocol.amqp.exception.AmqpProtocolClassException;
 import org.apache.eventmesh.runtime.core.protocol.amqp.exception.AmqpProtocolHeaderException;
 import org.apache.eventmesh.runtime.core.protocol.amqp.exception.AmqpProtocolVersionException;
-import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.frame.AMQData;
+import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.AMQData;
 
 import java.nio.charset.StandardCharsets;
 

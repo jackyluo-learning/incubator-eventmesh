@@ -17,7 +17,7 @@
 
 package org.apache.eventmesh.runtime.core.protocol.amqp.remoting.codec;
 
-import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.frame.AMQData;
+import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.AMQData;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

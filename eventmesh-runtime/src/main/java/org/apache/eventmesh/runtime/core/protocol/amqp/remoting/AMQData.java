@@ -15,10 +15,17 @@
  * limitations under the License.
  */
 
-package org.apache.eventmesh.runtime.core.protocol.amqp.send;
+package org.apache.eventmesh.runtime.core.protocol.amqp.remoting;
 
-public enum EventMeshAmqpSendStatus {
-    SUCCESS,
-    SEND_TOO_FAST,
-    OTHER_EXCEPTION;
+import java.io.Serializable;
+
+import io.netty.buffer.ByteBuf;
+
+/**
+ *
+ */
+public interface AMQData extends Serializable {
+
+    void encode(ByteBuf buf);
+
 }

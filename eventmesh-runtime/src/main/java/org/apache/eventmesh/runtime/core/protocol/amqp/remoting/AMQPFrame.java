@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.eventmesh.runtime.core.protocol.amqp.remoting.frame;
+package org.apache.eventmesh.runtime.core.protocol.amqp.remoting;
 
 
 import com.rabbitmq.client.AMQP;

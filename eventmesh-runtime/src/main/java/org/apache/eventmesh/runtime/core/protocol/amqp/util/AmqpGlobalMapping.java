@@ -1,4 +1,4 @@
-package org.apache.eventmesh.runtime.core.protocol.amqp;
+package org.apache.eventmesh.runtime.core.protocol.amqp.util;
 
 import org.apache.eventmesh.runtime.core.protocol.amqp.processor.AmqpChannel;
 import org.apache.eventmesh.runtime.core.protocol.amqp.processor.AmqpConnection;

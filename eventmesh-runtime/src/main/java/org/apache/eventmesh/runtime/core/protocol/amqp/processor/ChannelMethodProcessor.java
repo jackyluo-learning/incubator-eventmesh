@@ -1,9 +1,12 @@
 package org.apache.eventmesh.runtime.core.protocol.amqp.processor;
 
-import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.frame.AMQPFrame;
+import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.AMQPFrame;
 
 import java.util.Map;
 
+/**
+ * interface of ChannelMethodProcessor
+ */
 public interface ChannelMethodProcessor {
 
     void receiveChannelFlow(boolean active);

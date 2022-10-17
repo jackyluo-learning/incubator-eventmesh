@@ -1,18 +1,10 @@
-package org.apache.eventmesh.runtime.core.protocol.amqp.Session.consumer;
-
-import io.cloudevents.CloudEvent;
-import io.cloudevents.core.builder.CloudEventBuilder;
-import lombok.Data;
-import org.apache.eventmesh.api.EventListener;
-import org.apache.eventmesh.runtime.boot.EventMeshAmqpServer;
-import org.apache.eventmesh.runtime.constants.EventMeshConstants;
-import org.apache.eventmesh.runtime.core.plugin.MQConsumerWrapper;
-import org.apache.eventmesh.runtime.core.protocol.amqp.processor.AmqpChannel;
-import org.apache.eventmesh.runtime.core.protocol.amqp.processor.AmqpConnection;
-import org.apache.eventmesh.runtime.util.EventMeshUtil;
+package org.apache.eventmesh.runtime.core.protocol.amqp.consumer;
 
 import java.util.List;
-import java.util.Properties;
+
+import io.cloudevents.CloudEvent;
+
+import lombok.Data;
 
 @Data
 public class AmqpConsumerImpl implements AmqpConsumer {

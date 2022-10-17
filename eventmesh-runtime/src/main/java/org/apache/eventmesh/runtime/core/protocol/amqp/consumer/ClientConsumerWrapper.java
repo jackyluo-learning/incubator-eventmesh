@@ -1,14 +1,17 @@
-package org.apache.eventmesh.runtime.core.protocol.amqp;
+package org.apache.eventmesh.runtime.core.protocol.amqp.consumer;
 
-import io.cloudevents.core.builder.CloudEventBuilder;
 import org.apache.eventmesh.api.EventListener;
 import org.apache.eventmesh.runtime.boot.EventMeshAmqpServer;
 import org.apache.eventmesh.runtime.constants.EventMeshConstants;
 import org.apache.eventmesh.runtime.core.plugin.MQConsumerWrapper;
 import org.apache.eventmesh.runtime.core.protocol.amqp.downstreamstrategy.DownstreamDispatchStrategy;
 import org.apache.eventmesh.runtime.core.protocol.amqp.processor.AmqpChannel;
+import org.apache.eventmesh.runtime.core.protocol.amqp.util.AmqpGlobalMapping;
 
 import java.util.Properties;
+
+import io.cloudevents.core.builder.CloudEventBuilder;
+
 
 /**
  * define MQ consumer

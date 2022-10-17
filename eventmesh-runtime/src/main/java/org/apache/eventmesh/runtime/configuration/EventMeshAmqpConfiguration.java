@@ -37,11 +37,23 @@ public class EventMeshAmqpConfiguration extends CommonConfiguration {
      */
     public int maxFrameSize = 4096;
 
+    /**
+     * default max number of channels
+     */
+    public int maxNoOfChannels = 64;
+
+    /**
+     * default heart beat
+     */
+    public int heartBeat = 60 * 1000;
+
+    /**
+     * default max message size
+     */
+    public long maxMessageSize = 1024 * 1024 * 10;
+
     public EventMeshAmqpConfiguration(ConfigurationWrapper configurationWrapper) {
         super(configurationWrapper);
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> e1c07a77a01255c016791f206c4b20f651fef0b5
+

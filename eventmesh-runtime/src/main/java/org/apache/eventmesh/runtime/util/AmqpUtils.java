@@ -2,6 +2,7 @@ package org.apache.eventmesh.runtime.util;
 
 import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.AMQData;
 import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.AMQPFrame;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,9 +36,5 @@ public class AmqpUtils {
         // TODO: 2022/9/21
         writeFrame(frame);
     }
+}
 
-<<<<<<< HEAD
-}
-=======
-}
->>>>>>> e1c07a77a01255c016791f206c4b20f651fef0b5

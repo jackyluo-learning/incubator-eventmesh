@@ -66,8 +66,4 @@ public class VirtualHost {
                 });
         DEFAULT_VHOST = get("/");
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> e1c07a77a01255c016791f206c4b20f651fef0b5

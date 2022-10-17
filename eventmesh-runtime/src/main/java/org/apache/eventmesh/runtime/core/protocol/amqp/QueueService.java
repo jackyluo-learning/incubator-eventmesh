@@ -21,9 +21,5 @@ package org.apache.eventmesh.runtime.core.protocol.amqp;
  * provide services to use QueueContainer
  */
 public class QueueService {
-    private QueueContainer queueContainer;
 
-    public AmqpQueue getQueue(VirtualHost virtualHost, String queueName) {
-        return queueContainer.getOrCreateQueue(virtualHost, queueName);
-    }
 }
