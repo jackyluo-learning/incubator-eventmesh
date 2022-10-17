@@ -4,7 +4,10 @@ import io.cloudevents.CloudEvent;
 
 import java.util.List;
 
-public interface Consumer {
+/**
+ * AMQP Consumer, consume message from MQ and push to client
+ */
+public interface AmqpConsumer {
 
     void pushMessage(CloudEvent cloudEvent);
 

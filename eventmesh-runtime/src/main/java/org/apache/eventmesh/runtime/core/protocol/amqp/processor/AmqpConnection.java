@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class AmqpConnection  extends AmqpHandler {
     private static final Logger logger = LoggerFactory.getLogger(AmqpConnection.class);
@@ -40,6 +41,10 @@ public class AmqpConnection  extends AmqpHandler {
         AWAIT_OPEN,
         OPEN
     }
+
+    private static final AtomicLong ID_GENERATOR = new AtomicLong(0);
+
+    private long connectionId;
 
     private volatile ConnectionState state;
 
@@ -62,6 +67,7 @@ public class AmqpConnection  extends AmqpHandler {
 
     public AmqpConnection(EventMeshAmqpServer amqpServer) {
         super(amqpServer);
+        this.connectionId = ID_GENERATOR.incrementAndGet();
         this.channels = new ConcurrentHashMap<>();
         this.closingChannelsList = new ConcurrentHashMap<>();
         this.state = ConnectionState.INIT;

@@ -8,13 +8,12 @@ import org.apache.eventmesh.runtime.core.protocol.amqp.ExchangeService;
 import org.apache.eventmesh.runtime.core.protocol.amqp.QueueContainer;
 import org.apache.eventmesh.runtime.core.protocol.amqp.QueueService;
 import org.apache.eventmesh.runtime.core.protocol.amqp.Session.Session;
-import org.apache.eventmesh.runtime.core.protocol.amqp.Session.consumer.Consumer;
-import org.apache.eventmesh.runtime.core.protocol.amqp.Session.consumer.ConsumerImpl;
+import org.apache.eventmesh.runtime.core.protocol.amqp.Session.consumer.AmqpConsumer;
+import org.apache.eventmesh.runtime.core.protocol.amqp.Session.consumer.AmqpConsumerImpl;
 import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.MetaModels.AmqpQueue;
 import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.constants.ErrorCodes;
 import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.frame.AMQPFrame;
 import org.apache.eventmesh.runtime.util.AmqpUtils;
-import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +41,7 @@ public class AmqpChannel implements ChannelMethodProcessor {
     /**
      * Maps from consumer tag to consumers instance.
      */
-    private final Map<String, Consumer> tag2ConsumersMap = new ConcurrentHashMap<>();
+    private final Map<String, AmqpConsumer> tag2ConsumersMap = new ConcurrentHashMap<>();
 
     /**
      * The current message - which may be partial in the sense that not all frames have been received yet - which has
@@ -277,9 +276,9 @@ public class AmqpChannel implements ChannelMethodProcessor {
             customConsumerTag = consumerTag;
         }
 
-        Consumer c = new ConsumerImpl();
+        AmqpConsumer c = new AmqpConsumerImpl();
         tag2ConsumersMap.putIfAbsent(customConsumerTag, c);
-        this.session.setConsumer(c);
+        this.session.setAmqpConsumer(c);
         List<String> topicList = queueName2Topic(amqpQueue);
         for (String topic : topicList) {
             this.session.getMqConsumerWrapper().subscribe(topic);

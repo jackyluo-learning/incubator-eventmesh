@@ -2,8 +2,7 @@ package org.apache.eventmesh.runtime.core.protocol.amqp.Session;
 
 import lombok.Data;
 import org.apache.eventmesh.runtime.core.plugin.MQConsumerWrapper;
-import org.apache.eventmesh.runtime.core.protocol.amqp.Session.consumer.Consumer;
-import org.apache.eventmesh.runtime.core.protocol.amqp.Session.consumer.ConsumerImpl;
+import org.apache.eventmesh.runtime.core.protocol.amqp.Session.consumer.AmqpConsumer;
 import org.apache.eventmesh.runtime.core.protocol.amqp.processor.AmqpChannel;
 
 /**
@@ -21,7 +20,7 @@ public class Session {
      * a consumer that used to push message to client
      * and keep track of status of message
      */
-    private Consumer consumer;
+    private AmqpConsumer amqpConsumer;
 
     /**
      * the channel that related to current session
@@ -32,9 +31,9 @@ public class Session {
         this.amqpChannel = amqpChannel;
     }
 
-    public void setConsumer(Consumer consumer) {
+    public void setAmqpConsumer(AmqpConsumer amqpConsumer) {
         this.mqConsumerWrapper = new MQConsumerWrapper(
                 this.amqpChannel.getConnection().getAmqpServer().getEventMeshAmqpConfiguration().eventMeshConnectorPluginType);
-        this.consumer = consumer;
+        this.amqpConsumer = amqpConsumer;
     }
 }
