@@ -3,13 +3,14 @@ package org.apache.eventmesh.runtime.core.protocol.amqp.consumer;
 import java.util.List;
 
 import io.cloudevents.CloudEvent;
+import org.apache.eventmesh.runtime.core.protocol.tcp.client.session.push.DownStreamMsgContext;
 
 /**
  * AMQP Consumer, consume message from MQ and push to client
  */
 public interface AmqpConsumer {
 
-    void pushMessage(CloudEvent cloudEvent);
+    void pushMessage(PushMessageContext pushMessageContext);
 
     void messageRedeliver(Object messageId);
 
@@ -20,9 +21,11 @@ public interface AmqpConsumer {
      * @param messageId
      * @throws Exception
      */
-    void messageAck(Object messageId) throws Exception;
+    void messageAck(String messageId) throws Exception;
 
     void close();
+
+    String getConsumerId();
 
     String getConsumerTag();
 

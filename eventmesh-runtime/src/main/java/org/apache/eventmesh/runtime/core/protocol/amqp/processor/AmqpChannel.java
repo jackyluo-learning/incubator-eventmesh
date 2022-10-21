@@ -16,6 +16,7 @@ import com.rabbitmq.client.impl.AMQCommand;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.eventmesh.runtime.boot.EventMeshAmqpServer;
 import org.apache.eventmesh.runtime.configuration.EventMeshAmqpConfiguration;
+import org.apache.eventmesh.runtime.core.protocol.amqp.consumer.PushMessageContext;
 import org.apache.eventmesh.runtime.core.protocol.amqp.exception.AmqpException;
 import org.apache.eventmesh.runtime.core.protocol.amqp.exchange.ExchangeDefaults;
 import org.apache.eventmesh.runtime.core.protocol.amqp.metadata.model.ExchangeInfo;
@@ -33,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -97,6 +99,12 @@ public class AmqpChannel implements ChannelMethodProcessor {
     private static final int StatsPeriodSeconds = 1;
 
     private String virtualHostName;
+
+    private Map<Long, PushMessageContext> unackMessageMap = new ConcurrentHashMap<>();
+
+    public Map<Long, PushMessageContext> getUnackMessageMap() {
+        return unackMessageMap;
+    }
 
     public AmqpChannel(int channelId, AmqpConnection connection) {
         this.channelId = channelId;

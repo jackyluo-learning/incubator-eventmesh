@@ -1,6 +1,9 @@
 package org.apache.eventmesh.runtime.core.protocol.amqp.consumer;
 
+import lombok.Data;
 import org.apache.eventmesh.api.EventListener;
+import org.apache.eventmesh.api.EventMeshAction;
+import org.apache.eventmesh.api.EventMeshAsyncConsumeContext;
 import org.apache.eventmesh.runtime.boot.EventMeshAmqpServer;
 import org.apache.eventmesh.runtime.constants.EventMeshConstants;
 import org.apache.eventmesh.runtime.core.plugin.MQConsumerWrapper;
@@ -9,15 +12,33 @@ import org.apache.eventmesh.runtime.core.protocol.amqp.processor.AmqpChannel;
 import org.apache.eventmesh.runtime.core.protocol.amqp.util.AmqpGlobalMapping;
 
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.cloudevents.core.builder.CloudEventBuilder;
+import org.apache.eventmesh.runtime.core.protocol.tcp.client.group.ClientGroupWrapper;
+import org.apache.eventmesh.runtime.util.EventMeshUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
+ * a class represent a consumer used in AMQP
  * define MQ consumer
  * define EventLister registered in MQ consumer
  */
+@Data
 public class ClientConsumerWrapper {
+    public static Logger logger = LoggerFactory.getLogger(ClientConsumerWrapper.class);
+
+    /**
+     * group name of current consumer
+     */
+    private String groupName;
+
+    /**
+     * indicate whether mq consumer has been initiated or not
+     */
+    private AtomicBoolean initiated = new AtomicBoolean(Boolean.FALSE);
 
     /**
      * global server
@@ -43,6 +64,7 @@ public class ClientConsumerWrapper {
                                  AmqpGlobalMapping amqpGlobalMapping,
                                  MQConsumerWrapper mqConsumerWrapper,
                                  DownstreamDispatchStrategy downstreamDispatchStrategy) {
+        this.groupName = "amqpConsumerGroup";
         this.eventMeshAmqpServer = eventMeshAmqpServer;
         this.amqpGlobalMapping = amqpGlobalMapping;
         this.mqConsumerWrapper = mqConsumerWrapper;
@@ -50,14 +72,15 @@ public class ClientConsumerWrapper {
     }
 
     /**
-     * initialize amqpConsumer
+     * initialize mq consumer for amqp server
      * 1. initialize EventMesh mq consumer
      * 2. create EventListener and register into EventMesh mq consumer
      */
-    public void init() throws Exception {
+    public synchronized void init() throws Exception {
         Properties keyValue = new Properties();
         keyValue.put(EventMeshConstants.IS_BROADCAST, "false");
         keyValue.put(EventMeshConstants.EVENT_MESH_IDC, this.eventMeshAmqpServer.getEventMeshAmqpConfiguration().eventMeshIDC);
+        keyValue.put(EventMeshConstants.INSTANCE_NAME, EventMeshUtil.buildMeshClientID(groupName, eventMeshAmqpServer.getEventMeshAmqpConfiguration().eventMeshCluster));
         mqConsumerWrapper.init(keyValue);
 
         EventListener eventListener = (cloudEvent, context) -> {
@@ -66,8 +89,14 @@ public class ClientConsumerWrapper {
                     .withExtension(EventMeshConstants.REQ_RECEIVE_EVENTMESH_IP,
                             this.eventMeshAmqpServer.getEventMeshAmqpConfiguration().eventMeshServerIp).build();
             String topic = cloudEvent.getSubject();
-            AmqpChannel selectedAmqpChannel = downstreamDispatchStrategy.select(topic, amqpGlobalMapping);
-
+            AmqpConsumer selectedAmqpConsumer = downstreamDispatchStrategy.select(topic, amqpGlobalMapping);
+            EventMeshAsyncConsumeContext eventMeshAsyncConsumeContext = (EventMeshAsyncConsumeContext) context;
+            PushMessageContext pushMessageContext = new PushMessageContext(cloudEvent, this.mqConsumerWrapper, eventMeshAsyncConsumeContext.getAbstractContext());
+            selectedAmqpConsumer.pushMessage(pushMessageContext);
+            eventMeshAsyncConsumeContext.commit(EventMeshAction.ManualAck);
         };
+        mqConsumerWrapper.registerEventListener(eventListener);
+        this.initiated.compareAndSet(false, true);
+        logger.info("------Initiate consumer success------");
     }
 }

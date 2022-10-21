@@ -1,4 +1,4 @@
-package org.apache.eventmesh.runtime.util;
+package org.apache.eventmesh.runtime.core.protocol.amqp.util;
 
 import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.AMQData;
 import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.AMQPFrame;
