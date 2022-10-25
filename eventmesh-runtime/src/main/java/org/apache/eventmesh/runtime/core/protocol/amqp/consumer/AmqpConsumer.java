@@ -2,9 +2,6 @@ package org.apache.eventmesh.runtime.core.protocol.amqp.consumer;
 
 import java.util.List;
 
-import io.cloudevents.CloudEvent;
-import org.apache.eventmesh.runtime.core.protocol.tcp.client.session.push.DownStreamMsgContext;
-
 /**
  * AMQP Consumer, consume message from MQ and push to client
  */

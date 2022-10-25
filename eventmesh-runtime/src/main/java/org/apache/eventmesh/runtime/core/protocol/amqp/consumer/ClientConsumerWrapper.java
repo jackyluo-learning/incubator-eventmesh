@@ -7,9 +7,6 @@ import org.apache.eventmesh.api.EventMeshAsyncConsumeContext;
 import org.apache.eventmesh.runtime.boot.EventMeshAmqpServer;
 import org.apache.eventmesh.runtime.constants.EventMeshConstants;
 import org.apache.eventmesh.runtime.core.plugin.MQConsumerWrapper;
-import org.apache.eventmesh.runtime.core.protocol.amqp.downstreamstrategy.DownstreamDispatchStrategy;
-import org.apache.eventmesh.runtime.core.protocol.amqp.processor.AmqpChannel;
-import org.apache.eventmesh.runtime.core.protocol.amqp.util.AmqpGlobalMapping;
 
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;

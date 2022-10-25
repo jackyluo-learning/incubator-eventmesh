@@ -11,9 +11,9 @@
 
 package org.apache.eventmesh.runtime.core.protocol.amqp.processor;
 
-import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.impl.AMQCommand;
-import org.apache.commons.lang3.StringUtils;
+import static org.apache.eventmesh.runtime.core.protocol.amqp.remoting.protocol.ErrorCodes.INTERNAL_ERROR;
+import static org.apache.eventmesh.runtime.core.protocol.amqp.remoting.protocol.ErrorCodes.NOT_FOUND;
+
 import org.apache.eventmesh.runtime.boot.EventMeshAmqpServer;
 import org.apache.eventmesh.runtime.configuration.EventMeshAmqpConfiguration;
 import org.apache.eventmesh.runtime.core.protocol.amqp.consumer.PushMessageContext;
@@ -26,8 +26,8 @@ import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.protocol.ErrorCo
 import org.apache.eventmesh.runtime.core.protocol.amqp.service.ExchangeService;
 import org.apache.eventmesh.runtime.core.protocol.amqp.service.QueueService;
 import org.apache.eventmesh.runtime.core.protocol.amqp.util.NameUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -40,8 +40,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static org.apache.eventmesh.runtime.core.protocol.amqp.remoting.protocol.ErrorCodes.INTERNAL_ERROR;
-import static org.apache.eventmesh.runtime.core.protocol.amqp.remoting.protocol.ErrorCodes.NOT_FOUND;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.impl.AMQCommand;
 
 /**
  * Amqp Channel level method processor.

@@ -1,12 +1,5 @@
 package org.apache.eventmesh.runtime.core.protocol.amqp.consumer;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-
-import io.cloudevents.CloudEvent;
-import io.netty.channel.ChannelFutureListener;
 import org.apache.eventmesh.api.AbstractContext;
 import org.apache.eventmesh.common.Constants;
 import org.apache.eventmesh.common.protocol.amqp.AmqpMessage;
@@ -16,8 +9,17 @@ import org.apache.eventmesh.protocol.api.exception.ProtocolHandleException;
 import org.apache.eventmesh.runtime.core.plugin.MQConsumerWrapper;
 import org.apache.eventmesh.runtime.core.protocol.amqp.processor.AmqpChannel;
 import org.apache.eventmesh.runtime.core.protocol.amqp.remoting.AMQData;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.cloudevents.CloudEvent;
+import io.netty.channel.ChannelFutureListener;
 
 public class AmqpConsumerImpl implements AmqpConsumer {
 

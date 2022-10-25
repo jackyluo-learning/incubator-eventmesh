@@ -397,4 +397,7 @@ public abstract class AmqpHandler extends ChannelInboundHandlerAdapter implement
         return ctx;
     }
 
+    public EventMeshAmqpServer getAmqpServer() {
+        return amqpServer;
+    }
 }

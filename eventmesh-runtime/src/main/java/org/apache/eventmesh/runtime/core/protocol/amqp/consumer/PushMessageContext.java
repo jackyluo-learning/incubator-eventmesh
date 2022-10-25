@@ -1,10 +1,13 @@
 package org.apache.eventmesh.runtime.core.protocol.amqp.consumer;
 
-import io.cloudevents.CloudEvent;
-import lombok.Data;
 import org.apache.eventmesh.api.AbstractContext;
 import org.apache.eventmesh.runtime.core.plugin.MQConsumerWrapper;
 import org.apache.eventmesh.runtime.util.ServerGlobal;
+
+import io.cloudevents.CloudEvent;
+
+import lombok.Data;
+
 
 /**
  * context of message when pushing

@@ -628,4 +628,5 @@ public class AmqpConnection extends AmqpHandler {
     public AmqpInOutputConverter getAmqpInOutputConverter() {
         return amqpInOutputConverter;
     }
+
 }
