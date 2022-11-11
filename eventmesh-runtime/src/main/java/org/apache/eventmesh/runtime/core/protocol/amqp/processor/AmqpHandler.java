@@ -71,10 +71,6 @@ public abstract class AmqpHandler extends ChannelInboundHandlerAdapter implement
 
     }
 
-    public EventMeshAmqpServer getAmqpServer() {
-        return amqpServer;
-    }
-
     private void process(ChannelHandlerContext ctx, Object msg) throws AmqpFrameDecodingException {
         if (msg instanceof ProtocolFrame) {
             receiveProtocolHeader((ProtocolFrame) msg);
