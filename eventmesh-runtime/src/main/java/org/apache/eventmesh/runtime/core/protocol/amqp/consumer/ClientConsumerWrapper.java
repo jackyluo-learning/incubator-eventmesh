@@ -12,6 +12,8 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.cloudevents.core.builder.CloudEventBuilder;
+import org.apache.eventmesh.runtime.core.protocol.amqp.downstreamstrategy.DownstreamDispatchStrategy;
+import org.apache.eventmesh.runtime.core.protocol.amqp.util.AmqpGlobalMapping;
 import org.apache.eventmesh.runtime.core.protocol.tcp.client.group.ClientGroupWrapper;
 import org.apache.eventmesh.runtime.util.EventMeshUtil;
 import org.slf4j.Logger;
